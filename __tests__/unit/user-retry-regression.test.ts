@@ -77,7 +77,7 @@ async function setup() {
   const owner = api as object;
   activeOwner = owner;
   const ui = { notify: vi.fn(), setStatus: vi.fn() };
-  const ctx: any = { sessionManager: manager, ui };
+  const ctx: any = { model: { provider: "openai", id: "gpt-test" }, sessionManager: manager, ui };
   const restore = () => {
     unregisterRetrySession(manager, owner);
     (AgentSession.prototype as any)._prepareRetry = originalPrepareRetry;

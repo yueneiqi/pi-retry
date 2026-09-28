@@ -99,6 +99,7 @@ async function setup() {
   };
   recordRetrySessionAgent(sessionManager, agent as any);
   const ctx = {
+    model: { provider: "openai", id: "gpt-test" },
     mode: "tui",
     ui: {
       notify: vi.fn(),

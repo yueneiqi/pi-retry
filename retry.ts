@@ -161,6 +161,12 @@ function removeErrorFromAgentState(agent: Agent): void {
 
 type HiddenTurnKind = "retry" | "continue" | "empty";
 
+function isTargetGptModel(ctx: { model?: { provider?: string; id?: string } }): boolean {
+  const model = ctx.model;
+  const isOpenAiProvider = model?.provider === "openai" || model?.provider === "openai-codex";
+  return isOpenAiProvider && /^gpt(?:[-_]|$)/i.test(model.id ?? "");
+}
+
 function getHiddenTurnKind(agent: Agent): HiddenTurnKind | null {
   const messages = agent.state.messages;
   const lastMsg = messages[messages.length - 1];
@@ -380,6 +386,11 @@ export default function (pi: ExtensionAPI) {
   // triggerInvisibleContinue(), which owns the retry loop with backoff
   // sleeps that happen AFTER processEvents returns (outside the agent run).
   pi.on("agent_end", async (event, ctx) => {
+    // Keep this extension scoped to native OpenAI GPT models. Other providers
+    // and model families must retain Pi's normal behavior and must not enter
+    // the extension-managed retry loop.
+    if (!isTargetGptModel(ctx)) return;
+
     const binding = getRetrySession(ctx.sessionManager);
     if (binding && binding.owner !== owner) return;
     if (binding?.isChild) {

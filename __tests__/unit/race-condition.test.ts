@@ -99,6 +99,7 @@ function createMockCtx(entries: unknown[] = []) {
     });
   }
   return {
+    model: { provider: "openai", id: "gpt-test" },
     ui: { notify: vi.fn(), setStatus: vi.fn() },
     sessionManager,
   } as any;

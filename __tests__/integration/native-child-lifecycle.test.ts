@@ -141,9 +141,9 @@ async function createChildHarness(
   );
 
   const faux = fauxProvider({
-    provider: "pi-retry-test-child",
+    provider: "openai",
     api: "pi-retry-test-api",
-    models: [{ id: "pi-retry-test-model", name: "Retry test model", reasoning: false, contextWindow: options.contextWindow }],
+    models: [{ id: "gpt-test-model", name: "Retry test model", reasoning: false, contextWindow: options.contextWindow }],
     tokenSize: { min: 1, max: 1 },
   });
   faux.setResponses(responses);
@@ -155,7 +155,7 @@ async function createChildHarness(
   });
   modelRuntime.registerNativeProvider(faux.provider);
   await modelRuntime.refresh({ allowNetwork: false });
-  const model = modelRuntime.getModel("pi-retry-test-child", "pi-retry-test-model");
+  const model = modelRuntime.getModel("openai", "gpt-test-model");
   if (!model) throw new Error("The deterministic test model was not registered.");
 
   const settingsManager = SettingsManager.inMemory({
